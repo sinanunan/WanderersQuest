@@ -5,10 +5,10 @@
 #include"PathPoint.h"
 #include"SouthWest.h"
 #include"SouthEast.h"
-#include"South.h"
+#include"East.h"
 #include"NorthWest.h"
 #include"NorthEast.h"
-#include"North.h"
+#include"West.h"
 #include"CoorTypes.h"
 
 class Path
@@ -25,7 +25,7 @@ public:
 
 	unsigned size() const { return all_pos.size(); };
 	bool empty() const { return all_pos.empty(); };
-	void push(const ArrayPos pos) {all_pos.push_back(pos); };
+	void push(const ArrayPos pos) { all_pos.push_back(pos); };
 	ArrayPos pop();
 
 	ArrayPos get_start() const { return starting_pos; };
@@ -35,8 +35,7 @@ private:
 
 	ArrayPos starting_pos;
 	std::deque<ArrayPos> all_pos;
-	//std::queue<std::unique_ptr<PathPoint>> dir_list;
-
+	
 };
 
 #endif

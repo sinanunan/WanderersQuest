@@ -25,6 +25,12 @@
     <Filter Include="Header Files\CoorTypes">
       <UniqueIdentifier>{794dbea5-5bbf-4cfe-9e63-df3bed964c45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Settlements">
+      <UniqueIdentifier>{ad52450c-a3d0-4dfa-a0a1-1c192a19def4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Settlements">
+      <UniqueIdentifier>{966e403e-9a56-4438-b33c-a64f0256e02a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,13 +72,7 @@
     <ClCompile Include="SouthEast.cpp">
       <Filter>Source Files\Path</Filter>
     </ClCompile>
-    <ClCompile Include="South.cpp">
-      <Filter>Source Files\Path</Filter>
-    </ClCompile>
     <ClCompile Include="SouthWest.cpp">
-      <Filter>Source Files\Path</Filter>
-    </ClCompile>
-    <ClCompile Include="North.cpp">
       <Filter>Source Files\Path</Filter>
     </ClCompile>
     <ClCompile Include="NorthEast.cpp">
@@ -93,7 +93,43 @@
     <ClCompile Include="Dimension.cpp">
       <Filter>Source Files\CoorTypes</Filter>
     </ClCompile>
+    <ClCompile Include="West.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="East.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="Arena.cpp">
+      <Filter>Source Files\Settlements</Filter>
+    </ClCompile>
+    <ClCompile Include="City.cpp">
+      <Filter>Source Files\Settlements</Filter>
+    </ClCompile>
     <ClCompile Include="Settlement.cpp">
+      <Filter>Source Files\Settlements</Filter>
+    </ClCompile>
+    <ClCompile Include="Cards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Battle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NextTurnButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Trainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,9 +173,6 @@
     <ClInclude Include="NorthEast.h">
       <Filter>Header Files\PathSubClasses</Filter>
     </ClInclude>
-    <ClInclude Include="North.h">
-      <Filter>Header Files\PathSubClasses</Filter>
-    </ClInclude>
     <ClInclude Include="NorthWest.h">
       <Filter>Header Files\PathSubClasses</Filter>
     </ClInclude>
@@ -147,9 +180,6 @@
       <Filter>Header Files\PathSubClasses</Filter>
     </ClInclude>
     <ClInclude Include="SouthEast.h">
-      <Filter>Header Files\PathSubClasses</Filter>
-    </ClInclude>
-    <ClInclude Include="South.h">
       <Filter>Header Files\PathSubClasses</Filter>
     </ClInclude>
     <ClInclude Include="ArrayPos.h">
@@ -167,8 +197,53 @@
     <ClInclude Include="Coor.h">
       <Filter>Header Files\CoorTypes</Filter>
     </ClInclude>
+    <ClInclude Include="West.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="East.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="Arena.h">
+      <Filter>Header Files\Settlements</Filter>
+    </ClInclude>
+    <ClInclude Include="City.h">
+      <Filter>Header Files\Settlements</Filter>
+    </ClInclude>
     <ClInclude Include="Settlement.h">
+      <Filter>Header Files\Settlements</Filter>
+    </ClInclude>
+    <ClInclude Include="Cards.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Battle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NextTurnButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettlementEnum.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SDL2_image.dll" />
+    <None Include="SDL2.dll" />
+    <None Include="libpng16-16.dll" />
+    <None Include="libjpeg-9.dll" />
   </ItemGroup>
 </Project>

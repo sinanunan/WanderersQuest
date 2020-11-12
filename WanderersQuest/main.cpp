@@ -7,6 +7,7 @@ const int frame_delay = 1000 / FPS;
 
 int main(int argc, char* argv[])
 {
+	std::srand(std::time(NULL));
 
 	int height = 1800;
 	int width = 900;

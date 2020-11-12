@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include "PathEnum.h"
+
+// Represents the coordinate in a window
+
 struct Coor
 {
 	int x;

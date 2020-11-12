@@ -3,6 +3,8 @@
 #include "PathPoint.h"
 #include <iostream>
 
+// NorthWest arrow inherited from the superclass pathpoint
+
 class NorthWest : public PathPoint
 {
 public:
