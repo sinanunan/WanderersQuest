@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\PathSubClasses">
+      <UniqueIdentifier>{d33202b1-5cf1-42e0-b16a-bc0e5fd291be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Path">
+      <UniqueIdentifier>{affdeabe-ee84-4fb0-b931-cfc6b7d4b691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CoorTypes">
+      <UniqueIdentifier>{f4c5f79a-ce62-43cf-ad15-9be697741587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CoorTypes">
+      <UniqueIdentifier>{794dbea5-5bbf-4cfe-9e63-df3bed964c45}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TexManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkillList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathPoint.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="SouthEast.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="South.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="SouthWest.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="North.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="NorthEast.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="NorthWest.cpp">
+      <Filter>Source Files\Path</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayPos.cpp">
+      <Filter>Source Files\CoorTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Leftmost.cpp">
+      <Filter>Source Files\CoorTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Coor.cpp">
+      <Filter>Source Files\CoorTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Dimension.cpp">
+      <Filter>Source Files\CoorTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="Settlement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TexManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkillList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathPoint.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="PathEnum.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="NorthEast.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="North.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="NorthWest.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="SouthWest.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="SouthEast.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="South.h">
+      <Filter>Header Files\PathSubClasses</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayPos.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Dimension.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="CoorTypes.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Leftmost.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Coor.h">
+      <Filter>Header Files\CoorTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="Settlement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
