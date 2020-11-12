@@ -3,13 +3,15 @@
 #include "PathPoint.h"
 #include <iostream>
 
+// SouthEast arrow inherited from the superclass pathpoint
+
 class SouthEast : public PathPoint
 {
 public:
 
 	SouthEast() : PathPoint(PathEnum::SE) {};
 
-	void render(SDL_Rect& dest) override { // Code for south
+	void render(SDL_Rect& dest) override { 
 		SDL_Rect arrow;
 		arrow.h = dest.h / 2;
 		arrow.w = dest.w / 2;

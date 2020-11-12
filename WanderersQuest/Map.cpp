@@ -10,27 +10,24 @@ Map::Map(SDL_Renderer* game_renderer):
 	change.x = 0;
 	change.y = 0;
 	
+	level = 1;
 }
 
 Map::~Map()
 {
-	for (int i = 0; i < map_dim.h; i++) {
-		delete[] map_arr[i];
-	}
-	delete[] map_arr;
 }
 void Map::initialize_map() {
 	
 	window_dim.h = 900;
 	window_dim.w = 1800;
-	map_dim.h = 10;
-	map_dim.w = 10;
+	//map_dim.h = 10;
+	//map_dim.w = 10;
 	// map_dim = input_dim;
 
 	//hex_height = 200;
 	//height_to_width();
-	hex_width = 232;
-	hex_height = width_to_height(hex_width);
+	hex_height = 232;
+	hex_width = height_to_width(hex_height); // HEXDO change to height to width
 
 	leftmost.coor.x = leftmost_min_x();
 	leftmost.coor.y = leftmost_min_y();
@@ -38,15 +35,60 @@ void Map::initialize_map() {
 	leftmost.pos.c = 0; // TODO change to starting location
 	leftmost.pos.r = 0;
 
-	map_arr = new Hex *[map_dim.h];
-	for (int i = 0; i < map_dim.h; i++) {
-		map_arr[i] = new Hex[map_dim.h];
-	}
+	//map_arr = Generator::generate_map(map_dim);
 
-	//map_arr[2][2].assign_unit(unit, 2, 2);
-	//map_arr[2][0].assign_unit(unit, 2, 0);
+	Hex hex;
+	std::vector<Hex> row(map_dim.w, hex);
+	//map_arr = std::vector<std::vector<Hex>> map_arr(map_dim.h, row);
+	for (int i = 0; i < map_dim.h; i++) {
+		map_arr.push_back(row);
+	}
+	//map_arr = new Hex *[map_dim.h];
+	//for (int i = 0; i < map_dim.h; i++) {
+		//map_arr[i] = new Hex[map_dim.h];
+	//}
 }
 
+std::vector<ArrayPos> Map::generate_map(int num_players)
+{
+	std::vector<ArrayPos> starting_pos;
+	ArrayPos temp;
+
+	for (int i = 0; i < num_players; i++) {
+		bool ok_pos = false;
+		while (not ok_pos) {
+			ok_pos = true;
+			temp = ArrayPos::random_pos();
+			for (int j = 0; j < i; j++) {
+				ArrayPos dist = temp.dist(starting_pos[j]);
+				if (dist.r + dist.c < unit_start_dist)
+					ok_pos = false;
+			}
+		}
+		starting_pos.push_back(temp);
+
+	}
+	int size = map_arr.size() * map_arr[0].size();
+	for (int i = 0; i < size / 30; i++) {
+		int random = rand() % 3;
+		std::vector<ArrayPos> span;
+		temp = ArrayPos::random_pos();
+		span.push_back(temp);
+
+		if (random > 0) {
+			temp.c = temp.next_tile_c();
+			span.push_back(temp);
+		}
+		if (random > 1) {
+			temp.r = temp.next_tile_r();
+			span.push_back(temp);
+		}
+		create_city(span);
+		
+
+	}
+	return starting_pos;
+}
 void Map::update()
 {
 	animate_pan();
@@ -143,7 +185,7 @@ void Map::render() const
 		dest.y += dist_ver_tiles();
 		map_dest.r = map_dest.next_tile_r();
 	}
-	
+	//std::cout << "change " << change << "\n";
 
 }
 
@@ -161,8 +203,8 @@ void Map::grow_around_pivot(ArrayPos pos, bool animation)
 	
 	// calculating the number of tiles between the leftmost tile and the pivot
 	Coor req_tile;
-	req_tile.x = ceil(double(dist.x) / double(dist_hor_tiles()));
-	req_tile.y = ceil(double(dist.y) / (2 * double(dist_ver_tiles())));
+	req_tile.x = int (ceil(double(dist.x) / double(dist_hor_tiles())));
+	req_tile.y = int (ceil(double(dist.y) / (2 * double(dist_ver_tiles()))));
 	
 	// calculating the new leftmost coordinate and hex
 	Leftmost new_leftmost;
@@ -173,7 +215,7 @@ void Map::grow_around_pivot(ArrayPos pos, bool animation)
 
 
 	// if the row is even, we make the leftmost up-left tile (leftmost is always even)
-	if (pos.r % 2 == 1) {
+	if (pos.is_odd()) {
 		new_leftmost.coor.x -= dist_hor_tiles() / 2;
 		new_leftmost.coor.y -= dist_ver_tiles();
 		new_leftmost.pos.r = new_leftmost.pos.prev_tile_r();
@@ -190,44 +232,45 @@ void Map::grow_around_pivot(ArrayPos pos, bool animation)
 
 
 // TODO also assigns paths to hexes
-Path Map::find_path(ArrayPos unit_pos, ArrayPos dest, bool click) const
+std::shared_ptr<Path> Map::find_path(ArrayPos unit_pos, ArrayPos dest, bool click) const
 {
 	ArrayPos temp = unit_pos;
-	Path path(unit_pos);
+	std::shared_ptr<Path> path = std::make_shared<Path>(unit_pos);
 
 	int moves = 0;
-
+	
 	while (temp != dest) {
-
 		int col_dist = temp.dist_cols(dest);
 		int row_dist = temp.dist_rows(dest);
-		if (col_dist == 0 and abs(row_dist) != 1) {
-			if (row_dist > 0) {
-				temp.r = temp.next_tile_r(2);
+		if (row_dist == 0) {
+			if (col_dist > 0) {
+				temp.c = temp.next_tile_c();
 			}
 			else {
-				temp.r = temp.prev_tile_r(2);
+				temp.c = temp.prev_tile_c();
 			}
 		}
 		else {
 			if (col_dist > 0) {
-				if (temp.r % 2 == 1) {
+				if (temp.is_odd()) {
 					temp.c = temp.next_tile_c();
 				}
+				
 			}
 			else if (col_dist < 0) {
-				if (temp.r % 2 == 0) {
+				if (temp.is_even()) {
 					temp.c = temp.prev_tile_c();
 				}
 			}
+		}
 			if (row_dist > 0) {
 				temp.r = temp.next_tile_r();
 			}
-			else {
+			else if (row_dist < 0) {
 				temp.r = temp.prev_tile_r();
 			}
-		}
-		path.push(temp);
+
+		path->push(temp);
 	}
 	return path;
 }
@@ -286,41 +329,42 @@ ArrayPos Map::find_cursor_hex(Coor cursor_coor)
 	Coor extra_dist;
 	extra_dist.x = dist.x % dist_hor_tiles();
 	extra_dist.y = dist.y % (dist_ver_tiles() * 2);
-	if (extra_dist.x < hex_width / 4) {
-		int upleft_expected_y = (hex_height / 2) - 2 * width_to_height(extra_dist.x);
-		int downleft_expected_y = hex_height / 2 + 2 * width_to_height(extra_dist.x);
-			if (extra_dist.y < upleft_expected_y) {
+	
+	if (extra_dist.y < hex_height / 4) {
+		int upleft_expected_x = (hex_width / 2) - 2 * height_to_width(extra_dist.y);
+		int downleft_expected_x = hex_width / 2 + 2 * height_to_width(extra_dist.y);
+			if (extra_dist.x < upleft_expected_x) {
 				tile_dist.w--;
 				tile_dist.h--;
 			}
-			else if (extra_dist.y > downleft_expected_y) {
-				tile_dist.w--;
-				tile_dist.h++;
+			else if (extra_dist.x > downleft_expected_x) {
+				tile_dist.h--;
 			}
 	} 
-	else if (extra_dist.x > 3 * hex_width / 4) {
-		int x_offset = hex_width - extra_dist.x;
-		if (x_offset < 0) {
-			if (extra_dist.y > hex_height / 2) tile_dist.h++;
-			else tile_dist.h--;
+	else if (extra_dist.y > 3 * hex_height / 4) {
+		int y_offset = hex_height - extra_dist.y;
+		if (y_offset < 0) {
+			if (extra_dist.x <= hex_width / 2) tile_dist.w--;
+			tile_dist.h++;
 		} 
 		else {
-			int upright_expected_y = (hex_height / 2) - 2 * width_to_height(x_offset);
-			int downright_expected_y = hex_height / 2 + 2 * width_to_height(x_offset);
+			int upright_expected_x = (hex_width / 2) - 2 * height_to_width(y_offset);
+			int downright_expected_x = hex_width / 2 + 2 * height_to_width(y_offset);
 
-			if (extra_dist.y < upright_expected_y) {
-				tile_dist.h--;
+			if (extra_dist.x < upright_expected_x) {
+				tile_dist.h++;
+				tile_dist.w--;
 			}
-			else if (extra_dist.y > downright_expected_y) {
+			else if (extra_dist.x > downright_expected_x) {
 				tile_dist.h++;
 			}
 		}
 	}
+	
 
 	ArrayPos cursor_pos;
 	cursor_pos.r = leftmost.pos.next_tile_r(tile_dist.h);
 	cursor_pos.c = leftmost.pos.next_tile_c(tile_dist.w);
-	
 	return cursor_pos;
 }
 
@@ -365,39 +409,58 @@ void Map::check_leftmost_y()
 {
 	if (leftmost.coor.y > leftmost_min_y()) {
 		leftmost.coor.y -= 2 * dist_ver_tiles();
-		leftmost.pos.r = leftmost.pos.prev_tile_r( 2);
+		leftmost.pos.r = leftmost.pos.prev_tile_r(2);
 	}
 	if(leftmost.coor.y < leftmost_min_y() - 2 * dist_ver_tiles()) {
 		leftmost.coor.y += 2 * dist_ver_tiles();
-		leftmost.pos.r = leftmost.pos.next_tile_r
-		(2);
+		leftmost.pos.r = leftmost.pos.next_tile_r(2);
 	}
 }
 
 
 
-void Map::zoom_out(float multiplier) // TODO write function
+void Map::zoom_out() // TODO write function
 {
-	int old_height = hex_height;
-	int old_width = hex_width;
-	hex_height *= multiplier;
-	hex_width *= multiplier;
-	////int hex_w_window = 
-	//int hex_h_window = 
+
+	Coor middle(window_dim.w / 2, window_dim.h / 2);
+	ArrayPos middle_hex = find_cursor_hex(middle);
+	
+	grow_around_pivot(middle_hex, true);
+	
+	Coor change_bef = change;
+	
+	Dimension old_dim(hex_width, hex_height);
+
+	hex_height -= 4;
+	hex_width = height_to_width(hex_height);
+
+	grow_around_pivot(middle_hex, false);
+	change.x = 0;
+	change.y = 0;
+	leftmost.coor.x += change_bef.x;
+	leftmost.coor.y += change_bef.y;
+
+
 
 }
 
-int Map::width_to_height(const int width) const
+int Map::height_to_width(const int height) const
 {
-	int temp_height = double(width) / width_height_ratio;
+	int temp_width = int (double(height) / width_height_ratio);
 
-	if (temp_height % 2 == 1) temp_height++;
+	if (temp_width % 2 == 1) temp_width++;
 
-	return temp_height;
+	return temp_width;
 }
 
+void Map::assign_starters(std::vector<std::shared_ptr<UnitObject>> starter_units)
+{
+	for (auto it = starter_units.begin(); it != starter_units.end(); it++) {
+		assign_unit(*it);
+	}
+}
 
-void Map::assign_unit(UnitObject* unit)
+void Map::assign_unit(std::shared_ptr<UnitObject>  unit)
 {
 	ArrayPos unit_pos = unit->get_pos();
 	map_arr[unit_pos.r][unit_pos.c].assign_unit(unit);
@@ -405,25 +468,40 @@ void Map::assign_unit(UnitObject* unit)
 
 }
 
-void Map::move_unit(UnitObject* unit, const Path passed_pos)
+void Map::move_unit(std::shared_ptr<UnitObject>  unit, const std::shared_ptr<Path> passed_pos)
 {
-	if (passed_pos.empty()) return;
 	
-	clear_path(passed_pos);
+	if (passed_pos->empty()) return;
 
+	clear_path(*passed_pos);
+
+	
 	// moves the unit
-	bool collision;ArrayPos unit_pos = unit->get_pos();
+	ArrayPos unit_pos = unit->get_pos();
 	map_arr[unit_pos.r][unit_pos.c].assign_unit(unit);
 	
 
-	ArrayPos old_pos = passed_pos.get_start();
+	ArrayPos old_pos = passed_pos->get_start();
 	map_arr[old_pos.r][old_pos.c].clear_unit();
 	
 }
 
-void Map::create_city()
+void Map::kill_unit(std::shared_ptr<UnitObject> unit)
 {
-	std::shared_ptr<Settlement> city = std::make_shared<Settlement>();
-	map_arr[0][0].assign_settlement(city);
+	ArrayPos pos = unit->get_pos();
+	map_arr[pos.r][pos.c].clear_unit();
+}
+
+void Map::create_city(std::vector<ArrayPos> span)
+{
+	std::shared_ptr<City> city = std::make_shared<City>(level, span);
 	
+	for (auto pos = span.begin(); pos != span.end(); pos++) {
+		map_arr[pos->r][pos->c].assign_city(city);
+	}
+}
+
+std::shared_ptr<City> Map::get_city(ArrayPos pos)
+{
+	return map_arr[pos.r][pos.c].get_city();
 }

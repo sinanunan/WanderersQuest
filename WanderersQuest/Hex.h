@@ -5,7 +5,7 @@
 #include "CoorTypes.h"
 #include "SDL.h"
 #include "PathPoint.h"
-#include "Settlement.h"
+#include "City.h"
 #include <memory>
 #include <list>
 #include <algorithm>
@@ -14,12 +14,13 @@ class Hex
 {
 public:
 	Hex();
+	Hex(const Hex& copy);
 
 	void render(SDL_Rect& dest) const;
 	void pre_command();
 
-	void assign_unit(UnitObject* new_unit) { unit = new_unit; };
-	UnitObject* get_unit() const { return unit; };
+	void assign_unit(std::shared_ptr<UnitObject>  new_unit) { unit = new_unit; };
+	std::shared_ptr<UnitObject>  get_unit() const { return unit; };
 	bool has_unit() const { return unit != NULL; };
 	void clear_unit() { unit = NULL; };
 
@@ -27,19 +28,18 @@ public:
 	void remove_path(PathEnum dir);
 	void assign_tentative_path(std::unique_ptr<PathPoint> dir) { tentative_path = std::move(dir); };
 
-	void assign_settlement(std::shared_ptr<Settlement> city) { settlement = city; };
-	bool has_settlement() { return settlement != NULL; };
+	void assign_city(std::shared_ptr<City> _city) { city = _city; };
+	bool has_city() { return city != NULL; };
+	std::shared_ptr<City> get_city() { return city; };
 
 	static SDL_Renderer* renderer;
 	static SDL_Texture* hex_tex;
-	static SDL_Texture* tentative_tex;
-	static SDL_Texture* path_tex;
 
 
 private:
 
-	UnitObject* unit;
-	std::shared_ptr<Settlement> settlement;
+	std::shared_ptr<UnitObject>  unit;
+	std::shared_ptr<City> city;
 
 	std::unique_ptr<PathPoint> tentative_path;
 	std::list<std::unique_ptr<PathPoint>> move_path;

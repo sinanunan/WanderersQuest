@@ -19,6 +19,8 @@ public:
 	Map(SDL_Renderer* game_renderer);
 	~Map();
 
+	std::vector<ArrayPos> generate_map(int num_players);
+
 	void update();
 	void pre_command();
 	void render() const;
@@ -26,10 +28,14 @@ public:
 	void grow_around_pivot(ArrayPos pos, bool animation);
 	ArrayPos find_cursor_hex(Coor cursor_coor);
 
-	void create_city();
+	void create_city(std::vector<ArrayPos> span);
+	std::shared_ptr<City> get_city(ArrayPos cursor_pos);
 
-	void move_unit(UnitObject* unit, const Path passed_pos);
-	Path find_path(ArrayPos pos1, ArrayPos pos2, bool click) const; 
+	void move_unit(std::shared_ptr<UnitObject> unit, const std::shared_ptr<Path> passed_pos);
+	void kill_unit(std::shared_ptr<UnitObject> unit);
+
+
+	std::shared_ptr<Path> find_path(ArrayPos pos1, ArrayPos pos2, bool click) const;
 	void clear_path(Path path);
 	void set_path(Path path, bool click);
 
@@ -40,9 +46,10 @@ public:
 
 
 	
-	void zoom_out(float multiplier);
+	void zoom_out();
 
-	void assign_unit(UnitObject* unit);
+	void assign_starters(std::vector<std::shared_ptr<UnitObject>> starter_units);
+	void assign_unit(std::shared_ptr<UnitObject> unit);
 
 	static Dimension map_dim; // in terms of row and column
 
@@ -52,10 +59,10 @@ private:
 	
 	SDL_Renderer* renderer;
 
-	Hex** map_arr;
+	std::vector<std::vector<Hex>> map_arr;
 	Leftmost leftmost;
 
-	// represents the number of hexes 
+
 	Dimension window_dim;
 
 	void initialize_map();
@@ -64,20 +71,22 @@ private:
 	const int animation_speed = 5;
 	void animate_pan();
 
+	int level;
 
+	const int unit_start_dist = 5;
 	
 	
 	void check_leftmost_x();
 	void check_leftmost_y();
 	
-	int dist_hor_tiles() const { return  int(hex_width  * 1.5); };
-	int dist_ver_tiles() const { return  int(hex_height / 2  ); };
-	int leftmost_min_x() const { return  int(-hex_width  / 4 ); };
-	int leftmost_min_y() const { return  int(-hex_height / 2 ); };
+	int dist_hor_tiles() const { return  int(hex_width  * 1); };
+	int dist_ver_tiles() const { return  int(hex_height * 0.75  ); };
+	int leftmost_min_x() const { return  int(-hex_width  / 2 ); };
+	int leftmost_min_y() const { return  int(-hex_height / 4 ); };
 
 	// the dimension of a single hex in the window
 	// width is related to the height mathematically
-	int width_to_height(const int width) const;
+	int height_to_width(const int height) const;
 	const double width_height_ratio = 1.154;
 	int hex_height;
 	int hex_width;

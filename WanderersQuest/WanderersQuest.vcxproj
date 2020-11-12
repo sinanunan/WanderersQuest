@@ -149,19 +149,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Arena.cpp" />
     <ClCompile Include="ArrayPos.cpp" />
+    <ClCompile Include="Battle.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="NextTurnButton.cpp" />
+    <ClCompile Include="Card.cpp" />
+    <ClCompile Include="Cards.cpp" />
     <ClCompile Include="Coor.cpp" />
     <ClCompile Include="Dimension.cpp" />
     <ClCompile Include="Leftmost.cpp" />
-    <ClCompile Include="North.cpp" />
+    <ClCompile Include="Settlement.cpp" />
+    <ClCompile Include="Trader.cpp" />
+    <ClCompile Include="Trainer.cpp" />
+    <ClCompile Include="UI.cpp" />
+    <ClCompile Include="West.cpp" />
     <ClCompile Include="NorthEast.cpp" />
     <ClCompile Include="NorthWest.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PathPoint.cpp" />
     <ClCompile Include="PlayerList.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Settlement.cpp" />
-    <ClCompile Include="South.cpp" />
+    <ClCompile Include="City.cpp" />
+    <ClCompile Include="East.cpp" />
     <ClCompile Include="SouthEast.cpp" />
     <ClCompile Include="SouthWest.cpp" />
     <ClCompile Include="UnitObject.cpp" />
@@ -174,11 +184,22 @@
     <ClCompile Include="TexManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arena.h" />
     <ClInclude Include="ArrayPos.h" />
+    <ClInclude Include="Battle.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="NextTurnButton.h" />
+    <ClInclude Include="Card.h" />
+    <ClInclude Include="Cards.h" />
     <ClInclude Include="Coor.h" />
     <ClInclude Include="Dimension.h" />
     <ClInclude Include="Leftmost.h" />
-    <ClInclude Include="North.h" />
+    <ClInclude Include="Settlement.h" />
+    <ClInclude Include="SettlementEnum.h" />
+    <ClInclude Include="Trader.h" />
+    <ClInclude Include="Trainer.h" />
+    <ClInclude Include="UI.h" />
+    <ClInclude Include="West.h" />
     <ClInclude Include="NorthEast.h" />
     <ClInclude Include="NorthWest.h" />
     <ClInclude Include="PathEnum.h" />
@@ -187,8 +208,8 @@
     <ClInclude Include="PlayerList.h" />
     <ClInclude Include="CoorTypes.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="Settlement.h" />
-    <ClInclude Include="South.h" />
+    <ClInclude Include="City.h" />
+    <ClInclude Include="East.h" />
     <ClInclude Include="SouthEast.h" />
     <ClInclude Include="SouthWest.h" />
     <ClInclude Include="UnitObject.h" />
@@ -198,6 +219,12 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SkillList.h" />
     <ClInclude Include="TexManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libjpeg-9.dll" />
+    <None Include="libpng16-16.dll" />
+    <None Include="SDL2.dll" />
+    <None Include="SDL2_image.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

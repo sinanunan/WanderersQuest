@@ -29,7 +29,7 @@ ArrayPos operator-(const ArrayPos& left, const ArrayPos& right)
 }
 
 
-int ArrayPos::next_tile_c(const int extent) const // TODO make extent potional int extent = 1
+int ArrayPos::next_tile_c(const int extent) const 
 {
 	return (c + extent) % Map::map_dim.w;
 }
@@ -42,7 +42,7 @@ int ArrayPos::prev_tile_c(const int extent) const
 {
 	int temp_c = c;
 	temp_c -= extent;
-	if (temp_c < 0) temp_c += Map::map_dim.h;
+	if (temp_c < 0) temp_c += Map::map_dim.w;
 
 	return temp_c;
 }
@@ -96,4 +96,13 @@ int ArrayPos::dist_rows(const ArrayPos to) const
 		if (abs(dist) < abs(dist + map_h)) return dist;
 		else return dist + map_h;
 	}
+}
+
+ArrayPos ArrayPos::random_pos()
+{
+	ArrayPos pos;
+	pos.r = rand() % Map::map_dim.h;
+	pos.c = rand() % Map::map_dim.w;
+
+	return pos;
 }

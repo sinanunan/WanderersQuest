@@ -8,6 +8,8 @@
 #include <queue>
 #include "Path.h"
 
+// Class Decleration for a single unit
+
 class UnitObject
 {
 
@@ -15,6 +17,8 @@ public:
 	UnitObject();
 	UnitObject(ArrayPos starting_loc);
 	
+	static std::shared_ptr<UnitObject> generate_unit(ArrayPos start, int level);
+
 
 	static SDL_Renderer* renderer; // TODO do it for all or not
 	static SDL_Texture* unit_tex;
@@ -25,25 +29,30 @@ public:
 	void set_pos(ArrayPos pos) { unit_pos = pos; };
 
 	int get_movement() const { return movement; };
-	void set_move_path(Path path) { move_path = path; };
-	void set_tentative_path(Path path) { tentative_path = path; };
+	void set_move_path(std::shared_ptr<Path> path) { move_path = path; };
+	void set_tentative_path(std::shared_ptr<Path> path) { tentative_path = path; };
 
-	Path get_path() const { return move_path; };
-	bool has_path() const { return not move_path.empty(); };
+	std::shared_ptr<Path> get_path() const { return move_path; };
+	bool has_path() const { return (move_path != NULL); };
 
+	void print_skills() { skills.print_list(); };
+	SkillList* get_skills() { return &skills; };
 
-	Path move();
+	std::shared_ptr<Path> move();
 	void move_ai();
-	Path next_turn();
+	std::shared_ptr<Path> next_turn();
 
 private:
+
 	//SkillList char_skills;
 	int player_num;
 	int movement;
 	int moves_left;
 
-	Path move_path;
-	Path tentative_path;
+	std::shared_ptr<Path> move_path;
+	std::shared_ptr<Path> tentative_path;
+
+	SkillList skills;
 
 	ArrayPos unit_pos;
 

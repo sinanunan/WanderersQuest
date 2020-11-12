@@ -11,15 +11,26 @@ Game::Game(const char* title, int xpos, int ypos, int width, int height, bool fu
 	game_dim.h = height;
 	game_dim.w = width;
 
-	Dimension dim(10, 10);
-	Map::map_dim = dim;
-	WQ_map = new Map(renderer);
 	// TODO int num_players = create game // with settings
 	int num_players = 1;
-	players = new PlayerList(num_players);
-	UnitObject* unit = new UnitObject;
-	WQ_map->assign_unit(unit);
+
+	Dimension dim(20, 20);
+	Map::map_dim = dim;
+	WQ_map = new Map(renderer);
+	
+	//std::vector<ArrayPos> starters = WQ_map->generate_map(num_players);
+
+	ui = std::make_unique<UI>(game_dim);
+
+	cards = std::make_shared<Cards>(game_dim);
+	players = new PlayerList(num_players, cards);
+
+	std::vector<ArrayPos> starting_loc = WQ_map->generate_map(num_players);
+	std::vector<std::shared_ptr<UnitObject>> starter_units = players->assign_starters(starting_loc);
+	WQ_map->assign_starters(starter_units);
+
 	WQ_map->grow_around_pivot(players->get_active_player()->get_active_unit()->get_pos(), false);
+
 
 }
 Game::~Game()
@@ -75,11 +86,15 @@ void Game::pre_command()
 void Game::handle_events()
 {
 	Coor cursor_coor;
-	SDL_GetMouseState(&cursor_coor.x, &cursor_coor.y);
-	ArrayPos cursor_pos = WQ_map->find_cursor_hex(cursor_coor);
-	find_path(cursor_pos, false); // TODO add cursor pos based on window // Find path assigns to hex when unit is active
-	
+	ArrayPos cursor_pos;
 
+	SDL_GetMouseState(&cursor_coor.x, &cursor_coor.y);
+	if (not cards->cursor_on(cursor_coor)) {
+		cursor_pos = WQ_map->find_cursor_hex(cursor_coor);
+		find_path(cursor_pos, false); // TODO add cursor pos based on window // Find path assigns to hex when unit is active
+	}
+	
+	
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -88,7 +103,8 @@ void Game::handle_events()
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			move_unit(cursor_pos);
+			if (ui->cursor_on(cursor_coor)) next_turn();
+			else move_unit(cursor_pos);
 			break;
 		}
 		case SDL_KEYDOWN:
@@ -109,73 +125,98 @@ void Game::handle_events()
 				WQ_map->move_right(5);
 				break;
 			case SDLK_c: {
-				UnitObject* unit = players->get_active_player()->create_unit(ArrayPos(5, 2));
+				std::shared_ptr<UnitObject>  unit = players->get_active_player()->create_unit(ArrayPos(5, 2));
 				WQ_map->assign_unit(unit);
 				break; }
 			case SDLK_l:
 				next_turn();
 				break;
 			case SDLK_n: {
-				UnitObject* unit = players->get_active_player()->get_next_unit();
+				std::shared_ptr<UnitObject>  unit = players->get_active_player()->get_next_unit();
 				WQ_map->grow_around_pivot(unit->get_pos(), true);
 				break;
 			}
-			case SDLK_f:
-				WQ_map->create_city();
+			case SDLK_u:
+				use_settlement();
+				break;
+			case SDLK_z:
+				WQ_map->zoom_out();
+				break;
+			case SDLK_p:
+				players->get_active_player()->get_active_unit()->print_skills();
+			case SDLK_k:
+				kill_unit(players->get_active_player(), players->get_active_player()->get_active_unit());
 			}
+			
 		}
 	}
-	
+
+	//std::cerr << "after handel\n";
 	
 }
 
 void Game::update()
 {
+	//std::cerr << "in update\n";
 	WQ_map->update();
-	
+	cards->update();
 	
 	count++;
 	//std::cout << count << std::endl;
+
+	//std::cout << "after update\n";
 }
 
 void Game::render()
 {
-	
+
+	//std::cout << "in render\n";
 	SDL_RenderClear(renderer);
 
 	WQ_map->render();
+	players->render();
+	ui->render();
 	
 	SDL_RenderPresent(renderer);
+
+	//std::cout << "after render\n";
 	
 }
 
-void Game::init_tex()
+void Game::init_tex() // TODO have it for all
 {
 	UnitObject::renderer = renderer;
 	Hex::renderer = renderer;
 	SouthWest::renderer = renderer;
 	SouthEast::renderer = renderer;
-	South::renderer = renderer;
+	East::renderer = renderer;
 	NorthWest::renderer = renderer;
 	NorthEast::renderer = renderer;
-	North::renderer = renderer;
+	West::renderer = renderer;
 
+	Button::renderer = renderer;
+	NextTurnButton::renderer = renderer;
 	Settlement::renderer = renderer;
+	Card::renderer = renderer;
+	Card::card_tex = TexManager::load_texture(CARD_PATH, renderer);
 
+	NextTurnButton::next_turn_tex = TexManager::load_texture(NEXT_TURN_PATH, renderer);
+	Button::button_tex = TexManager::load_texture(NEXT_TURN_PATH, renderer);
 
 	UnitObject::unit_tex = TexManager::load_texture(UNIT_PATH, renderer);
 	Hex::hex_tex = TexManager::load_texture(HEX_PATH, renderer);
-	Hex::tentative_tex = TexManager::load_texture(TENTATIVE_PATH, renderer);
-	Hex::path_tex = TexManager::load_texture(PATH_PATH, renderer);
-	Settlement::settle_tex = TexManager::load_texture(SETTLE_PATH, renderer);
+	Arena::arena_tex = TexManager::load_texture(ARENA_PATH, renderer);
+	Trader::trader_tex = TexManager::load_texture(TRADER_PATH, renderer);
+
 
 	SouthWest::sw_tex = TexManager::load_texture(UPR_PATH, renderer);
 	SouthEast::se_tex = TexManager::load_texture(UPL_PATH, renderer);
-	South::south_tex = TexManager::load_texture(UP_PATH, renderer);
+	West::west_tex = TexManager::load_texture(UP_PATH, renderer);
 	NorthWest::nw_tex = TexManager::load_texture(UPL_PATH, renderer);
 	NorthEast::ne_tex = TexManager::load_texture(UPR_PATH, renderer);
-	North::north_tex = TexManager::load_texture(UP_PATH, renderer);
+	East::east_tex = TexManager::load_texture(UP_PATH, renderer);
 }
+
 
 void Game::clean()
 {
@@ -191,43 +232,44 @@ bool Game::is_running()
 
 // TODO after this command class
 
-void Game::find_path(ArrayPos cursor_pos, bool click) // TODO call in unit decide tbh
+void Game::find_path(ArrayPos cursor_pos, bool click) 
 {
 	
-	Player* active_player = players->get_active_player();
+	std::shared_ptr<Player> active_player = players->get_active_player();
 	//if () TODO if there is an active unit 
-	UnitObject* active = active_player->get_active_unit(); 
+	std::shared_ptr<UnitObject>  active = active_player->get_active_unit(); 
 
 	ArrayPos unit_pos = active->get_pos();
 	int movement = active->get_movement();
 
-	Path path = WQ_map->find_path(unit_pos, cursor_pos, click); 
+	std::shared_ptr<Path> path = WQ_map->find_path(unit_pos, cursor_pos, click); 
 
 
 	if (click) active->set_move_path(path);
 	else       active->set_tentative_path(path);
 
-	WQ_map->set_path(path, click);
+	
+	WQ_map->set_path(*path, click);
 	
 }
 // TODO change name to click 
 void Game::move_unit(ArrayPos cursor_pos)
 {
 
-	Player* active_player = players->get_active_player();
-	
-	// TODO if there is an active unit
-	UnitObject* active = active_player->get_active_unit();
-	// TODO typedef deque array pos
+	std::shared_ptr<Player> active_player = players->get_active_player();
 
+	// TODO if there is an active unit
+	std::shared_ptr<UnitObject>  active = active_player->get_active_unit();
+	
 	if (active->has_path()) {
 		
-		WQ_map->clear_path(active->get_path());
+		WQ_map->clear_path(*active->get_path());
 	}
 
 	find_path(cursor_pos, true);
+
 	
-	Path passed_pos = active->move();
+	std::shared_ptr<Path> passed_pos = active->move();
 	WQ_map->move_unit(active, passed_pos);
 }
 
@@ -235,8 +277,8 @@ void Game::next_turn()
 {
 	
 
-	std::vector<Path> all_passed  = players->next_turn();
-	std::vector<UnitObject>* units = players->get_active_player()->get_units();
+	std::vector<std::shared_ptr<Path>> all_passed  = players->next_turn();
+	std::vector<std::shared_ptr<UnitObject>>* units = players->get_active_player()->get_units();
 
 	
 
@@ -246,11 +288,38 @@ void Game::next_turn()
 	}
 
 
-	for (int i = 0; i < units->size(); i++) {
-		WQ_map->move_unit(&units->at(i), all_passed[i]);
-		WQ_map->clear_path(all_passed[i]);
+	for (unsigned i = 0; i < units->size(); i++) {
+		WQ_map->move_unit(units->at(i), all_passed[i]);
+	}
+	// NEXT TURN FOR MAP TO GROW AROUND PIVOT
+
+}
+
+void Game::use_settlement()
+{
+	std::shared_ptr<Player> active_player = players->get_active_player();
+	std::shared_ptr<UnitObject>  active_unit = active_player->get_active_unit();
+	ArrayPos unit_pos = active_unit->get_pos();
+
+	std::shared_ptr<City> city = WQ_map->get_city(unit_pos);
+	if (city == NULL) return;
+
+	auto new_units = city->use_settlement(active_unit); // todo typedef
+
+	if (new_units->size() == 1 and new_units->front() == active_unit) kill_unit(active_player, active_unit);
+
+	for (auto it = new_units->begin(); it != new_units->end(); it++) {
+		active_player->create_unit(*it);
+		WQ_map->assign_unit(*it);
 	}
 
+
+}
+
+void Game::kill_unit(std::shared_ptr<Player> player, std::shared_ptr<UnitObject> unit)
+{
+	WQ_map->kill_unit(unit);
+	player->kill_unit(unit);
 }
 
 

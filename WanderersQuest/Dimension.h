@@ -4,6 +4,8 @@
 #include <iostream>
 #include "PathEnum.h"
 
+// Dimension struct used to represent the dimensions of a hexmap
+
 struct Dimension
 {
 	int w;

@@ -16,6 +16,7 @@ ArrayPos Path::operator[] (const int index) const
 	if (index >= all_pos.size()) {
 		exit(1);
 	}
+
 	return all_pos[index];
 }
 

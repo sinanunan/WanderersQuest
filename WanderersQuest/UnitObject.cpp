@@ -42,33 +42,37 @@ void UnitObject::render(const SDL_Rect& hex) const
 			   //  finds the middle --- aligns middle of player with middle of hex
 	unit_rect.x = (hex.x + hex.w / 2) - (unit_rect.w / 2);
 	unit_rect.y = (hex.y + hex.h / 2) - (unit_rect.h / 2);
+
+	//std::cout << "unit h:" << unit_rect.h << "      unit w:" << unit_rect.w << std::endl;
+	//std::cout << "    center x: " << unit_rect.x + unit_rect.w << "    center y: " << unit_rect.y + unit_rect.h << "\n";
 	
 	SDL_RenderCopy(renderer, unit_tex, NULL, &unit_rect);
 }
 
-Path UnitObject::next_turn()
+std::shared_ptr<Path> UnitObject::next_turn()
 {
 	// TODO 
 	
 	moves_left = movement;
-	Path passed_pos;
+	
 	if (has_path()) {
-		passed_pos = move();
+		return move();
 	}
-	return passed_pos;
+
+	return std::make_shared<Path>();
 }
 
 // TODO Animate move
-Path UnitObject::move()
+std::shared_ptr<Path> UnitObject::move()
 {
-	Path passed_pos(unit_pos);
-
-	while (not move_path.empty() and moves_left != 0) {
-
-		unit_pos = move_path.pop();
-		passed_pos.push(unit_pos);
+	std::shared_ptr<Path> passed_pos = std::make_shared<Path>(unit_pos);
+	
+	while (not move_path->empty() and moves_left != 0) {
+		unit_pos = move_path->pop();
+		passed_pos->push(unit_pos);
 
 		moves_left--;
+
 	}
 	return passed_pos;
 
@@ -79,13 +83,18 @@ Path UnitObject::move()
 void UnitObject::move_ai()
 {
 
-	while (not move_path.empty() and moves_left != 0) {
+	while (not move_path->empty() and moves_left != 0) {
 
-		unit_pos = move_path.pop();
+		unit_pos = move_path->pop();
 
 		moves_left--;
 	}
 
+}
+
+std::shared_ptr<UnitObject> UnitObject::generate_unit(ArrayPos start, int level)
+{
+	return std::make_shared<UnitObject>(start); // TODO
 }
 
 
